@@ -2104,14 +2104,28 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       //console.log(filas)
       //const sp = this.$refs[val];
       var x = 0;
-      var handle_rows_1 = this.$refs[posicion + '_' + 1][0].children[seleccion].classList[0];
-      var handle_rows_2 = this.$refs[posicion + '_' + 2][0].children[seleccion].classList[0];
-      var handle_rows_3 = this.$refs[posicion + '_' + 3][0].children[seleccion].classList[0];
-      console.log(handle_rows_1, handle_rows_2, handle_rows_3);
 
-      if (handle_rows_1 === 'data_x' && handle_rows_2 === 'data_x' && handle_rows_3 === 'data_x') {
-        x = 3;
-      } //for(let row = 1; row <= 3; row++){
+      if (posicion === 0) {
+        var handle_rows_1 = this.$refs[posicion + '_' + 1][0].children[seleccion].classList[0];
+        var handle_rows_2 = this.$refs[posicion + '_' + 2][0].children[seleccion].classList[0];
+        var handle_rows_3 = this.$refs[posicion + '_' + 3][0].children[seleccion].classList[0];
+      }
+
+      if (posicion === 1) {
+        var handle_rows_4 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+        var handle_rows_5 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+        var handle_rows_6 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+        console.log(handle_rows_4, handle_rows_5, handle_rows_6);
+      }
+
+      if (posicion === 2) {
+        var handle_rows_7 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+        var handle_rows_8 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+        var handle_rows_9 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+      } //if((handle_rows_1 === 'data_x') && (handle_rows_2 === 'data_x') && (handle_rows_3 === 'data_x') || (handle_rows_4 === 'data_x') && (handle_rows_5 === 'data_x') && (handle_rows_6 === 'data_x')){
+      //  x = 3
+      //}
+      //for(let row = 1; row <= 3; row++){
       //  let handle_rows_horizontal = posicion + '_' + row;
       //const referencia = this.$refs[handle_rows_horizontal][0].children[seleccion].classList[0];
       //if(referencia === 'data_x'){
@@ -2132,25 +2146,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       if (x === 3) {
         console.log('gano horitzontal');
-      } //for(let handle_array = 0; handle_array < this.handle_ganador.length; handle_array++){
-      //console.log(this.handle_ganador[filas])
-      //}
-      //console.log(referencia[0].children[seleccion].classList[0]);
-      //for(let col=1; col <= 3; col++){
-      //  console.log(sp[0].id)
-      //}
-      //console.log(this.$refs[handle_rows][0].children[seleccion].attributes.class.nodeValue)
-      // for(let fila = 0; fila < this.handle_jugada.length; fila++){
-      //     // console.log(this.handle_jugada[fila][0])
-      //     for(let dato = 0;dato <= 5; dato++){
-      //         if(this.handle_jugada[fila][dato] == this.jugada_x){
-      //             // console.log(this.handle_jugada[fila][dato])
-      //             alert("gano")
-      //         }
-      //     }
-      // }
+      }
+    } //for(let handle_array = 0; handle_array < this.handle_ganador.length; handle_array++){
+    //console.log(this.handle_ganador[filas])
+    //}
+    //console.log(referencia[0].children[seleccion].classList[0]);
+    //for(let col=1; col <= 3; col++){
+    //  console.log(sp[0].id)
+    //}
+    //console.log(this.$refs[handle_rows][0].children[seleccion].attributes.class.nodeValue)
+    // for(let fila = 0; fila < this.handle_jugada.length; fila++){
+    //     // console.log(this.handle_jugada[fila][0])
+    //     for(let dato = 0;dato <= 5; dato++){
+    //         if(this.handle_jugada[fila][dato] == this.jugada_x){
+    //             // console.log(this.handle_jugada[fila][dato])
+    //             alert("gano")
+    //         }
+    //     }
+    // }
+    //}
 
-    }
   }
 });
 

@@ -183,7 +183,7 @@ export default {
 
 
         },
-        check_jugada(val,seleccion,filas,posicion){
+        check_jugada(val,seleccion,filas,posicion) {
 
             /*
             * array de jugadas por x,o
@@ -195,17 +195,32 @@ export default {
             //console.log(filas)
             //const sp = this.$refs[val];
 
-            
+
             let x = 0;
 
-            const handle_rows_1 = this.$refs[posicion + '_' + 1][0].children[seleccion].classList[0];
-            const handle_rows_2 = this.$refs[posicion + '_' + 2][0].children[seleccion].classList[0];
-            const handle_rows_3 = this.$refs[posicion + '_' + 3][0].children[seleccion].classList[0];
-
-            console.log(handle_rows_1, handle_rows_2,handle_rows_3)
-            if((handle_rows_1 === 'data_x') && (handle_rows_2 === 'data_x') && (handle_rows_3 === 'data_x')){
-                x = 3
+            if (posicion === 0) {
+                const handle_rows_1 = this.$refs[posicion + '_' + 1][0].children[seleccion].classList[0];
+                const handle_rows_2 = this.$refs[posicion + '_' + 2][0].children[seleccion].classList[0];
+                const handle_rows_3 = this.$refs[posicion + '_' + 3][0].children[seleccion].classList[0];
             }
+            if (posicion === 1) {
+                const handle_rows_4 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                const handle_rows_5 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+                const handle_rows_6 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+
+                console.log(handle_rows_4, handle_rows_5,handle_rows_6 )
+            }
+            if (posicion === 2){
+                const handle_rows_7 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                const handle_rows_8 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+                const handle_rows_9 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+            }
+
+
+            //if((handle_rows_1 === 'data_x') && (handle_rows_2 === 'data_x') && (handle_rows_3 === 'data_x') || (handle_rows_4 === 'data_x') && (handle_rows_5 === 'data_x') && (handle_rows_6 === 'data_x')){
+              //  x = 3
+            //}
+
             //for(let row = 1; row <= 3; row++){
               //  let handle_rows_horizontal = posicion + '_' + row;
                 //const referencia = this.$refs[handle_rows_horizontal][0].children[seleccion].classList[0];
@@ -229,7 +244,7 @@ export default {
                 console.log('gano horitzontal')
             }
 
-
+            }
 
             //for(let handle_array = 0; handle_array < this.handle_ganador.length; handle_array++){
             //console.log(this.handle_ganador[filas])
@@ -250,7 +265,7 @@ export default {
             //         }
             //     }
             // }
-        }
+        //}
     }
 }
 </script>
