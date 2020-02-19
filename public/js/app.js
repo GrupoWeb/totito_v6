@@ -2055,15 +2055,30 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         2: '_3_3_1_3_2_3',
         3: '_2_3_1_3_3_3',
         4: '_2_3_3_3_1_3'
-      }, "4", '_1_3_3_3_2_3')]
+      }, "4", '_1_3_3_3_2_3')],
+      handle_ganador: [{
+        0: [{
+          x: 1,
+          y: 0
+        }]
+      }, {
+        1: [{
+          x: 20,
+          y: 0
+        }]
+      }, {
+        2: [{
+          x: 0,
+          y: 0
+        }]
+      }]
     };
   },
   methods: {
-    evento: function evento(val, filas) {
+    evento: function evento(val, filas, posicion) {
       var ctx = this.$refs[val];
       ctx[0].classList.add('data_x');
-      var cantidad = ctx[0].children.length;
-      this.check_jugada(val, this.seleccion, filas); // console.log(this.seleccion)
+      var cantidad = ctx[0].children.length; // console.log(this.seleccion)
 
       for (var x = 0; x < cantidad; x++) {
         ctx[0].children[this.seleccion].classList.remove('data_x_hidden');
@@ -2071,6 +2086,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
 
       if (this.seleccion == 0) {
+        this.check_jugada(val, this.seleccion, filas, posicion);
         this.seleccion++;
         this.jugada_x = this.jugada_x + '_' + val;
       } else {
@@ -2078,15 +2094,53 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.jugada_y = this.jugada_y + '_' + val;
       }
     },
-    check_jugada: function check_jugada(val, seleccion, filas) {
-      var sp = this.$refs[val];
-      console.log(filas);
+    check_jugada: function check_jugada(val, seleccion, filas, posicion) {
+      /*
+      * array de jugadas por x,o
+      * la variable fila me da la posicion actual de la fila
+      * la variaable seleccion me da el jugador ----- 0= jugador X, 01 = jugador Y
+      * */
+      //console.log(this.handle_ganador.length)
+      //console.log(filas)
+      //const sp = this.$refs[val];
+      var x = 0;
+      var handle_rows_1 = this.$refs[posicion + '_' + 1][0].children[seleccion].classList[0];
+      var handle_rows_2 = this.$refs[posicion + '_' + 2][0].children[seleccion].classList[0];
+      var handle_rows_3 = this.$refs[posicion + '_' + 3][0].children[seleccion].classList[0];
+      console.log(handle_rows_1, handle_rows_2, handle_rows_3);
 
-      for (var row = 1; row <= 3; row++) {
-        for (var col = 1; col <= 3; col++) {
-          console.log(sp[0].id);
-        }
-      } // for(let fila = 0; fila < this.handle_jugada.length; fila++){
+      if (handle_rows_1 === 'data_x' && handle_rows_2 === 'data_x' && handle_rows_3 === 'data_x') {
+        x = 3;
+      } //for(let row = 1; row <= 3; row++){
+      //  let handle_rows_horizontal = posicion + '_' + row;
+      //const referencia = this.$refs[handle_rows_horizontal][0].children[seleccion].classList[0];
+      //if(referencia === 'data_x'){
+      //  x++
+      //}
+      //}
+      //for(let row = 0; row < 3; row++){
+      //  let handle_rows_horizontal = row + '_' + filas;
+      //const referencia = this.$refs[handle_rows_horizontal][0].children[seleccion].classList[0];
+      //if(referencia === 'data_x'){
+      //  x++
+      // }
+      //}
+      //console.log(x)
+
+
+      console.log(val, '_', filas, '_', posicion);
+
+      if (x === 3) {
+        console.log('gano horitzontal');
+      } //for(let handle_array = 0; handle_array < this.handle_ganador.length; handle_array++){
+      //console.log(this.handle_ganador[filas])
+      //}
+      //console.log(referencia[0].children[seleccion].classList[0]);
+      //for(let col=1; col <= 3; col++){
+      //  console.log(sp[0].id)
+      //}
+      //console.log(this.$refs[handle_rows][0].children[seleccion].attributes.class.nodeValue)
+      // for(let fila = 0; fila < this.handle_jugada.length; fila++){
       //     // console.log(this.handle_jugada[fila][0])
       //     for(let dato = 0;dato <= 5; dato++){
       //         if(this.handle_jugada[fila][dato] == this.jugada_x){
@@ -38178,20 +38232,20 @@ var render = function() {
                   "td",
                   {
                     key: r,
-                    ref: indexs + "_" + index,
+                    ref: indexs - 1 + "_" + index,
                     refInFor: true,
                     staticClass: "cuadro ",
-                    attrs: { id: "fila_" + indexs + "_" + index },
+                    attrs: { id: "fila_" + (indexs - 1) + "_" + index },
                     on: {
                       click: function($event) {
-                        return _vm.evento(indexs + "_" + index, indexs)
+                        _vm.evento(indexs - 1 + "_" + index, index, indexs - 1)
                       }
                     }
                   },
                   [
                     _c("span", { staticClass: "data_x_hidden" }, [_vm._v("X")]),
                     _vm._v(" "),
-                    _c("span", { staticClass: "data_y_hidden" }, [_vm._v("O")])
+                    _c("span", { staticClass: "data_x_hidden" }, [_vm._v("O")])
                   ]
                 )
               }),
@@ -50642,8 +50696,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! E:\www\totito_v6\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! E:\www\totito_v6\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\Juan Jolon\Desktop\9no semestre\ingenieria de sosftware\www\totito_v6\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\Juan Jolon\Desktop\9no semestre\ingenieria de sosftware\www\totito_v6\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
