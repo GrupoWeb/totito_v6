@@ -164,7 +164,6 @@ export default {
             return Math.round(Math.random() * (max - min) + min);
         },
         jugador_automatico(val,filas,posicion){
-            
             let fila = this.number_random(0,2); 
             let pos = this.number_random(1,3); 
             let jugada = fila+'_'+pos
