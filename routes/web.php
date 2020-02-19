@@ -13,3 +13,5 @@
 
 
 Route::get('/','totito@show_app');
+Route::post('watch_play','totito@watch_play');
+Route::post('save_play','totito@save_play');
