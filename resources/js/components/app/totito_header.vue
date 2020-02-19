@@ -6,7 +6,7 @@
                     <tr  v-for="(indexs, rs) in 3" :key="rs">
                     <td v-for="(index, r) in 3" :key="r" class="cuadro " v-bind:id="'fila_'+(indexs-1)+'_'+index" :ref="(indexs-1)+ '_' + index" @click="evento((indexs-1) + '_' + index, index,(indexs-1))">
                             <span  class="data_x_hidden">X</span>
-                            <span  class="data_x_hidden">O</span>
+                            <span  class="data_y_hidden">O</span>
                     </td>
                     </tr>
                 </table>
@@ -14,7 +14,7 @@
             <div class="col">
                 <div>
                     <label class="label">Jugador 1</label><br>
-                        <span>-> {{ jugada_x }}</span> <br>
+                        <span>-> {{ jugada_ganadora }}</span> <br>
                     <label class="label">Jugador 2</label><br>
                         <span>-> {{ jugada_y }}</span>
                 </div>
@@ -51,11 +51,15 @@
 export default {
     data() {
         return {
+            ganador_x_uno:0,
+            ganador_x_dos:0,
+            ganador_x_tres:0,
             data_x:true,
             data_o:false,
             seleccion: 0,
             jugada_x:"",
             jugada_y:"",
+            jugada_ganadora:[],
             handle_jugada:[
                 {
                     0:    '_1_1_1_2_1_3',
@@ -125,36 +129,7 @@ export default {
 
 
             ],
-            handle_ganador:[
-                {
-                    0:
-                        [
-                            {
-                                x:1,
-                                y:0
-                            }
-                        ]
-                },
-                {
-                    1:
-                        [
-                            {
-                                x:20,
-                                y:0
-                            }
-                        ]
-                },
-                {
-                    2:
-                        [
-                            {
-                                x:0,
-                                y:0
-                            }
-                        ]
-                }
-
-            ]
+            
         }
     },
     methods: {
@@ -163,19 +138,21 @@ export default {
             ctx[0].classList.add('data_x')
             const cantidad = ctx[0].children.length
 
-            // console.log(this.seleccion)
-            for(let x = 0; x < cantidad; x++){
-                ctx[0].children[this.seleccion].classList.remove('data_x_hidden')
-                ctx[0].children[this.seleccion].classList.add('data_x')
-            }
-
-
+            
             if(this.seleccion == 0 ){
+                for(let x = 0; x < cantidad; x++){
+                    ctx[0].children[this.seleccion].classList.remove('data_x_hidden')
+                    ctx[0].children[this.seleccion].classList.add('data_x')
+                }
                 this.check_jugada(val,this.seleccion,filas,posicion)
                 this.seleccion++
+                this.jugador_automatico(val,filas,posicion)
                 this.jugada_x = this.jugada_x + '_'+val
             }else{
-
+                for(let x = 0; x < cantidad; x++){
+                    ctx[0].children[this.seleccion].classList.remove('data_y_hidden')
+                    ctx[0].children[this.seleccion].classList.add('data_y')
+                }
                 this.seleccion = 0
                 this.jugada_y = this.jugada_y + '_' + val
             }
@@ -183,9 +160,1253 @@ export default {
 
 
         },
-        check_jugada(val,seleccion,filas,posicion) {
+        number_random(min, max){
+            return Math.round(Math.random() * (max - min) + min);
+        },
+        jugador_automatico(val,filas,posicion){
+            
+            let fila = this.number_random(0,2); 
+            let pos = this.number_random(1,3); 
+            let jugada = fila+'_'+pos
+            if(val != jugada){
+                this.evento(jugada,filas,posicion)
+            }else{
+                this.jugador_automatico(val,filas,posicion)
+            }
+            //return jugada
+        },
+        check_f_uno(seleccion){
+            
 
-            /*
+                    let handle_rows_1 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_2 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_3 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    if((handle_rows_1 === 'data_x') && (handle_rows_2 === 'data_x') && (handle_rows_3 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_1',
+                            segunda: '0_2',
+                            tercera: '0_3'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_4 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_5 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_6 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_4 === 'data_x') && (handle_rows_5 === 'data_x') && (handle_rows_6 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_3',
+                            segunda: '0_2',
+                            tercera: '0_1'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_7 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_8 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_9 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_7 === 'data_x') && (handle_rows_8 === 'data_x') && (handle_rows_9 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_2',
+                            segunda: '0_1',
+                            tercera: '0_3'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_10 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_11 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_12 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_10 === 'data_x') && (handle_rows_11 === 'data_x') && (handle_rows_12 === 'data_x') ){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_2',
+                            segunda: '0_3',
+                            tercera: '0_1'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_13 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_14 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_15 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_13 === 'data_x') && (handle_rows_14 === 'data_x') && (handle_rows_15 === 'data_x') ){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_3',
+                            segunda: '0_1',
+                            tercera: '0_2'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_16 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_17 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_18 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_16 === 'data_x') && (handle_rows_17 === 'data_x') && (handle_rows_18 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_1',
+                            segunda: '0_3',
+                            tercera: '0_2'
+                        })
+                        return 3
+                    }
+
+                    /* columna 1 */
+
+                    let handle_rows_19 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_20 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_21 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_19 === 'data_x') && (handle_rows_20 === 'data_x') && (handle_rows_21 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_1',
+                            segunda: '1_1',
+                            tercera: '2_1'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_22 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_23 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_24 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_22 === 'data_x') && (handle_rows_23 === 'data_x') && (handle_rows_24 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_1',
+                            segunda: '2_1',
+                            tercera: '1_1'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_25 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_26 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_27 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_25 === 'data_x') && (handle_rows_26 === 'data_x') && (handle_rows_27 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_1',
+                            segunda: '2_1',
+                            tercera: '0_1'
+                        })
+                       return 3
+                    }
+
+                    let handle_rows_28 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_29 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_30 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_28 === 'data_x') && (handle_rows_29 === 'data_x') && (handle_rows_30 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_1',
+                            segunda: '0_1',
+                            tercera: '2_1'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_31 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_32 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_33 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_31 === 'data_x') && (handle_rows_32 === 'data_x') && (handle_rows_33 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_1',
+                            segunda: '0_1',
+                            tercera: '1_1'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_34 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_35 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_36 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_34 === 'data_x') && (handle_rows_35 === 'data_x') && (handle_rows_36 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_1',
+                            segunda: '1_1',
+                            tercera: '0_1'
+                        })
+                        return 3
+                    }
+
+                    //-----------------------------------------------------
+
+                    let handle_rows_37 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_38 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_39 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_37 === 'data_x') && (handle_rows_38 === 'data_x') && (handle_rows_39 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_1',
+                            segunda: '1_2',
+                            tercera: '2_3'
+                        })
+                       return 3
+                    }
+
+                    let handle_rows_40 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_41 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_42 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_40 === 'data_x') && (handle_rows_41 === 'data_x') && (handle_rows_42 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_1',
+                            segunda: '2_3',
+                            tercera: '1_2'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_43 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_44 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_45 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_43 === 'data_x') && (handle_rows_44 === 'data_x') && (handle_rows_45 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_2',
+                            segunda: '0_1',
+                            tercera: '2_3'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_46 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_47 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_48 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_46 === 'data_x') && (handle_rows_47 === 'data_x') && (handle_rows_48 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_2',
+                            segunda: '2_3',
+                            tercera: '0_1'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_49 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_50 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_51 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    if((handle_rows_49 === 'data_x') && (handle_rows_50 === 'data_x') && (handle_rows_51 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_3',
+                            segunda: '0_1',
+                            tercera: '1_2'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_52 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_53 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_54 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_52 === 'data_x') && (handle_rows_53 === 'data_x') && (handle_rows_54 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_3',
+                            segunda: '1_2',
+                            tercera: '0_1'
+                        })
+                        return 3
+                    }
+
+                    /* column 2 */
+                    let handle_rows_55 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_56 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_57 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_55 === 'data_x') && (handle_rows_56 === 'data_x') && (handle_rows_57 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_2',
+                            segunda: '1_2',
+                            tercera: '2_2'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_58 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_59 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_60 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_58 === 'data_x') && (handle_rows_59 === 'data_x') && (handle_rows_60 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_2',
+                            segunda: '2_2',
+                            tercera: '1_2'
+                        })
+                        return 3
+                    }
+                    
+                    let handle_rows_61 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_62 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_63 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_61 === 'data_x') && (handle_rows_62 === 'data_x') && (handle_rows_63 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_2',
+                            segunda: '2_2',
+                            tercera: '0_2'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_64 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_65 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_66 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_64 === 'data_x') && (handle_rows_65 === 'data_x') && (handle_rows_66 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_2',
+                            segunda: '0_2',
+                            tercera: '2_2'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_67 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_68 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_69 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_67 === 'data_x') && (handle_rows_68 === 'data_x') && (handle_rows_69 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_2',
+                            segunda: '0_2',
+                            tercera: '1_2'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_70 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_71 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_72 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_70 === 'data_x') && (handle_rows_71 === 'data_x') && (handle_rows_72 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_2',
+                            segunda: '1_2',
+                            tercera: '0_2'
+                        })
+                        return 3
+                    }
+
+                    /* columna 3 */
+
+                    let handle_rows_73 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_74 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_75 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_73 === 'data_x') && (handle_rows_74 === 'data_x') && (handle_rows_75 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_3',
+                            segunda: '1_3',
+                            tercera: '2_3'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_76 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_77 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_78 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_76 === 'data_x') && (handle_rows_77 === 'data_x') && (handle_rows_78 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_3',
+                            segunda: '2_3',
+                            tercera: '1_3'
+                        })
+                        return 3
+                    }
+                    
+                    let handle_rows_79 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_80 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_81 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_79 === 'data_x') && (handle_rows_80 === 'data_x') && (handle_rows_81 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_3',
+                            segunda: '2_3',
+                            tercera: '0_3'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_82 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_83 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_84 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_82 === 'data_x') && (handle_rows_83 === 'data_x') && (handle_rows_84 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_3',
+                            segunda: '0_3',
+                            tercera: '2_3'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_85 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_86 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_87 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_85 === 'data_x') && (handle_rows_86 === 'data_x') && (handle_rows_87 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_3',
+                            segunda: '0_3',
+                            tercera: '1_3'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_88 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_89 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_90 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_88 === 'data_x') && (handle_rows_89 === 'data_x') && (handle_rows_90 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_3',
+                            segunda: '1_3',
+                            tercera: '0_3'
+                        })
+                        return 3
+                    }
+        },
+        check_f_dos(seleccion){    
+                                   
+                    let handle_rows_1 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_2 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_3 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_1 === 'data_x') && (handle_rows_2 === 'data_x') && (handle_rows_3 === 'data_x') ){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_1',
+                            segunda: '1_2',
+                            tercera: '1_3'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_4 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_5 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_6 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_4 === 'data_x') && (handle_rows_5 === 'data_x') && (handle_rows_6 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_3',
+                            segunda: '1_2',
+                            tercera: '1_1'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_7 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_8 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_9 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_7 === 'data_x') && (handle_rows_8 === 'data_x') && (handle_rows_9 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_2',
+                            segunda: '1_1',
+                            tercera: '1_3'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_10 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_11 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_12 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_10 === 'data_x') && (handle_rows_11 === 'data_x') && (handle_rows_12 === 'data_x') ){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_2',
+                            segunda: '1_3',
+                            tercera: '1_1'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_13 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_14 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_15 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_13 === 'data_x') && (handle_rows_14 === 'data_x') && (handle_rows_15 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_3',
+                            segunda: '1_1',
+                            tercera: '1_2'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_16 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_17 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_18 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_16 === 'data_x') && (handle_rows_17 === 'data_x') && (handle_rows_18 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_1',
+                            segunda: '1_3',
+                            tercera: '1_2'
+                        })
+                        return 3
+                    }
+
+                    /* columna 1 */
+                    let handle_rows_19 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_20 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_21 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_19 === 'data_x') && (handle_rows_20 === 'data_x') && (handle_rows_21 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_1',
+                            segunda: '1_1',
+                            tercera: '2_1'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_22 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_23 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_24 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_22 === 'data_x') && (handle_rows_23 === 'data_x') && (handle_rows_24 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_1',
+                            segunda: '2_1',
+                            tercera: '1_1'
+                        })
+                       return 3
+                    }
+
+                    let handle_rows_25 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_26 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_27 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_25 === 'data_x') && (handle_rows_26 === 'data_x') && (handle_rows_27 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_1',
+                            segunda: '2_1',
+                            tercera: '0_1'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_28 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_29 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_30 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_28 === 'data_x') && (handle_rows_29 === 'data_x') && (handle_rows_30 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_1',
+                            segunda: '0_1',
+                            tercera: '2_1'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_31 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_32 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_33 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_31 === 'data_x') && (handle_rows_32 === 'data_x') && (handle_rows_33 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_1',
+                            segunda: '0_1',
+                            tercera: '1_1'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_34 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_35 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_36 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0]; 
+                    
+                    if((handle_rows_34 === 'data_x') && (handle_rows_35 === 'data_x') && (handle_rows_36 === 'data_x') ){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_1',
+                            segunda: '1_1',
+                            tercera: '0_1'
+                        })
+                        return 3
+                    }
+
+                    /* column 2 */
+                    let handle_rows_55 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_56 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_57 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_55 === 'data_x') && (handle_rows_56 === 'data_x') && (handle_rows_57 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_2',
+                            segunda: '1_2',
+                            tercera: '2_2'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_58 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_59 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_60 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_58 === 'data_x') && (handle_rows_59 === 'data_x') && (handle_rows_60 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_2',
+                            segunda: '2_2',
+                            tercera: '1_2'
+                        })
+                        return 3
+                    }
+                    
+                    let handle_rows_61 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_62 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_63 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_61 === 'data_x') && (handle_rows_62 === 'data_x') && (handle_rows_63 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_2',
+                            segunda: '2_2',
+                            tercera: '0_2'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_64 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_65 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_66 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_64 === 'data_x') && (handle_rows_65 === 'data_x') && (handle_rows_66 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_2',
+                            segunda: '0_2',
+                            tercera: '2_2'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_67 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_68 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_69 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_67 === 'data_x') && (handle_rows_68 === 'data_x') && (handle_rows_69 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_2',
+                            segunda: '0_2',
+                            tercera: '1_2'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_70 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_71 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_72 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_70 === 'data_x') && (handle_rows_71 === 'data_x') && (handle_rows_72 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_2',
+                            segunda: '1_2',
+                            tercera: '0_2'
+                        })
+                        return 3
+                    }
+
+                    /* columna 3 */
+
+                    let handle_rows_73 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_74 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_75 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_73 === 'data_x') && (handle_rows_74 === 'data_x') && (handle_rows_75 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_3',
+                            segunda: '1_3',
+                            tercera: '2_3'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_76 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_77 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_78 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_76 === 'data_x') && (handle_rows_77 === 'data_x') && (handle_rows_78 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_3',
+                            segunda: '2_3',
+                            tercera: '1_3'
+                        })
+                        return 3
+                    }
+                    
+                    let handle_rows_79 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_80 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_81 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_79 === 'data_x') && (handle_rows_80 === 'data_x') && (handle_rows_81 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_3',
+                            segunda: '2_3',
+                            tercera: '0_3'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_82 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_83 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_84 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_82 === 'data_x') && (handle_rows_83 === 'data_x') && (handle_rows_84 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_3',
+                            segunda: '0_3',
+                            tercera: '2_3'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_85 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_86 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_87 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_85 === 'data_x') && (handle_rows_86 === 'data_x') && (handle_rows_87 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_3',
+                            segunda: '0_3',
+                            tercera: '1_3'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_88 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_89 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_90 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_88 === 'data_x') && (handle_rows_89 === 'data_x') && (handle_rows_90 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_3',
+                            segunda: '1_3',
+                            tercera: '0_3'
+                        })
+                        return 3
+                    }
+
+        },
+        check_f_tres(seleccion){
+            
+
+                    let handle_rows_1 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_2 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_3 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_1 === 'data_x') && (handle_rows_2 === 'data_x') && (handle_rows_3 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_1',
+                            segunda: '2_2',
+                            tercera: '2_3'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_4 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_5 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_6 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_4 === 'data_x') && (handle_rows_5 === 'data_x') && (handle_rows_6 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_3',
+                            segunda: '2_2',
+                            tercera: '2_1'
+                        })
+                        return 3
+                    }
+
+
+                    let handle_rows_7 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_8 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_9 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_7 === 'data_x') && (handle_rows_8 === 'data_x') && (handle_rows_9 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_2',
+                            segunda: '2_1',
+                            tercera: '2_3'
+                        })
+                        return 3
+                    }
+
+
+                    let handle_rows_10 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_11 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_12 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_10 === 'data_x') && (handle_rows_11 === 'data_x') && (handle_rows_12 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_2',
+                            segunda: '2_3',
+                            tercera: '2_1'
+                        })
+                        return 3
+                    }
+
+
+                    let handle_rows_13 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_14 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_15 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_13 === 'data_x') && (handle_rows_14 === 'data_x') && (handle_rows_15 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_3',
+                            segunda: '2_1',
+                            tercera: '2_2'
+                        })
+                        return 3
+                    }
+
+
+                    let handle_rows_16 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_17 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_18 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_16 === 'data_x') && (handle_rows_17 === 'data_x') && (handle_rows_18 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_1',
+                            segunda: '2_3',
+                            tercera: '2_2'
+                        })
+                        return 3
+                    }
+
+
+                    let handle_rows_19 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_20 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_21 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_19 === 'data_x') && (handle_rows_20 === 'data_x') && (handle_rows_21 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_1',
+                            segunda: '1_1',
+                            tercera: '2_1'
+                        })
+                        return 3
+                    }
+
+
+                    let handle_rows_22 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_23 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_24 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_22 === 'data_x') && (handle_rows_23 === 'data_x') && (handle_rows_24 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_1',
+                            segunda: '2_1',
+                            tercera: '1_1'
+                        })
+                        return 3
+                    }
+
+
+                    let handle_rows_25 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_26 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_27 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_25 === 'data_x') && (handle_rows_26 === 'data_x') && (handle_rows_27 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_1',
+                            segunda: '2_1',
+                            tercera: '0_1'
+                        })
+                        return 3
+                    }
+
+
+                    let handle_rows_28 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_29 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_30 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_28 === 'data_x') && (handle_rows_29 === 'data_x') && (handle_rows_30 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_1',
+                            segunda: '0_1',
+                            tercera: '2_1'
+                        })
+                        return 3
+                    }
+
+
+                    let handle_rows_31 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_32 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_33 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_31 === 'data_x') && (handle_rows_32 === 'data_x') && (handle_rows_33 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_1',
+                            segunda: '0_1',
+                            tercera: '1_1'
+                        })
+                        return 3
+                    }
+
+
+                    let handle_rows_34 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_35 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_36 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_34 === 'data_x') && (handle_rows_35 === 'data_x') && (handle_rows_36 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_1',
+                            segunda: '1_1',
+                            tercera: '0_1'
+                        })
+                        return 3
+                    }
+
+
+                    let handle_rows_37 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_38 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_39 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_37 === 'data_x') && (handle_rows_38 === 'data_x') && (handle_rows_39 === 'data_x') ){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_1',
+                            segunda: '1_2',
+                            tercera: '0_3'
+                        })
+                        return 3
+                    }
+
+
+                    let handle_rows_40 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_41 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_42 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_40 === 'data_x') && (handle_rows_41 === 'data_x') && (handle_rows_42 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_1',
+                            segunda: '0_3',
+                            tercera: '1_2'
+                        })
+                        return 3
+                    }
+
+
+                    let handle_rows_43 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_44 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_45 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+
+                    if((handle_rows_43 === 'data_x') && (handle_rows_44 === 'data_x') && (handle_rows_45 === 'data_x') ){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_2',
+                            segunda: '0_3',
+                            tercera: '2_1'
+                        })
+                        return 3
+                    }
+
+
+                    let handle_rows_46 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_47 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_48 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_46 === 'data_x') && (handle_rows_47 === 'data_x') && (handle_rows_48 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_2',
+                            segunda: '2_1',
+                            tercera: '0_3'
+                        })
+                        return 3
+                    }
+
+
+                    let handle_rows_49 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_50 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_51 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_49 === 'data_x') && (handle_rows_50 === 'data_x') && (handle_rows_51 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_1',
+                            segunda: '0_3',
+                            tercera: '1_2'
+                        })
+                        return 3
+                    }
+
+
+                    let handle_rows_52 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
+                    let handle_rows_53 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_54 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_52 === 'data_x') && (handle_rows_53 === 'data_x') && (handle_rows_54 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_1',
+                            segunda: '1_2',
+                            tercera: '0_3'
+                        })
+                        return 3
+                    }
+
+                    /* column 2 */
+                    let handle_rows_55 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_56 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_57 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_55 === 'data_x') && (handle_rows_56 === 'data_x') && (handle_rows_57 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_2',
+                            segunda: '1_2',
+                            tercera: '2_2'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_58 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_59 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_60 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_58 === 'data_x') && (handle_rows_59 === 'data_x') && (handle_rows_60 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_2',
+                            segunda: '2_2',
+                            tercera: '1_2'
+                        })
+                        return 3
+                    }
+                    
+                    let handle_rows_61 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_62 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_63 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_61 === 'data_x') && (handle_rows_62 === 'data_x') && (handle_rows_63 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_2',
+                            segunda: '2_2',
+                            tercera: '0_2'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_64 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_65 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_66 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_64 === 'data_x') && (handle_rows_65 === 'data_x') && (handle_rows_66 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_2',
+                            segunda: '0_2',
+                            tercera: '2_2'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_67 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_68 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_69 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_67 === 'data_x') && (handle_rows_68 === 'data_x') && (handle_rows_69 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_2',
+                            segunda: '0_2',
+                            tercera: '1_2'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_70 = this.$refs[2 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_71 = this.$refs[1 + '_' + 2][0].children[seleccion].classList[0];
+                    let handle_rows_72 = this.$refs[0 + '_' + 2][0].children[seleccion].classList[0];
+
+                    if((handle_rows_70 === 'data_x') && (handle_rows_71 === 'data_x') && (handle_rows_72 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_2',
+                            segunda: '1_2',
+                            tercera: '0_2'
+                        })
+                        return 3
+                    }
+
+                    /* columna 3 */
+
+                    let handle_rows_73 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_74 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_75 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_73 === 'data_x') && (handle_rows_74 === 'data_x') && (handle_rows_75 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_3',
+                            segunda: '1_3',
+                            tercera: '2_3'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_76 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_77 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_78 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_76 === 'data_x') && (handle_rows_77 === 'data_x') && (handle_rows_78 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '0_3',
+                            segunda: '2_3',
+                            tercera: '1_3'
+                        })
+                        return 3
+                    }
+                    
+                    let handle_rows_79 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_80 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_81 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_79 === 'data_x') && (handle_rows_80 === 'data_x') && (handle_rows_81 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_3',
+                            segunda: '2_3',
+                            tercera: '0_3'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_82 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_83 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_84 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_82 === 'data_x') && (handle_rows_83 === 'data_x') && (handle_rows_84 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '1_3',
+                            segunda: '0_3',
+                            tercera: '2_3'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_85 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_86 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_87 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_85 === 'data_x') && (handle_rows_86 === 'data_x') && (handle_rows_87 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_3',
+                            segunda: '0_3',
+                            tercera: '1_3'
+                        })
+                        return 3
+                    }
+
+                    let handle_rows_88 = this.$refs[2 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_89 = this.$refs[1 + '_' + 3][0].children[seleccion].classList[0];
+                    let handle_rows_90 = this.$refs[0 + '_' + 3][0].children[seleccion].classList[0];
+
+                    if((handle_rows_88 === 'data_x') && (handle_rows_89 === 'data_x') && (handle_rows_90 === 'data_x')){
+                        this.jugada_ganadora.push({
+                            seleccion: seleccion,
+                            primera: '2_3',
+                            segunda: '1_3',
+                            tercera: '0_3'
+                        })
+                        return 3
+                    }
+
+
+        },
+        check_jugada(val,seleccion,filas,posicion) {
+                
+                this.ganador_x_uno = this.check_f_uno(seleccion)
+                this.ganador_x_dos = this.check_f_dos(seleccion)
+                this.ganador_x_tres = this.check_f_tres(seleccion)
+                if(this.ganador_x_uno === 3){
+                    console.log('gano x uno y la conbinación es: ')
+                }else if(this.ganador_x_dos === 3){
+                    console.log('gano x dos')
+                }else if(this.ganador_x_tres === 3){
+                    console.log('gano x tres')
+                }
+
+            }
+
+
+ /*
             * array de jugadas por x,o
             * la variable fila me da la posicion actual de la fila
             * la variaable seleccion me da el jugador ----- 0= jugador X, 01 = jugador Y
@@ -194,57 +1415,6 @@ export default {
 
             //console.log(filas)
             //const sp = this.$refs[val];
-
-
-            let x = 0;
-
-            if (posicion === 0) {
-                const handle_rows_1 = this.$refs[posicion + '_' + 1][0].children[seleccion].classList[0];
-                const handle_rows_2 = this.$refs[posicion + '_' + 2][0].children[seleccion].classList[0];
-                const handle_rows_3 = this.$refs[posicion + '_' + 3][0].children[seleccion].classList[0];
-            }
-            if (posicion === 1) {
-                const handle_rows_4 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
-                const handle_rows_5 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
-                const handle_rows_6 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
-
-                console.log(handle_rows_4, handle_rows_5,handle_rows_6 )
-            }
-            if (posicion === 2){
-                const handle_rows_7 = this.$refs[0 + '_' + 1][0].children[seleccion].classList[0];
-                const handle_rows_8 = this.$refs[1 + '_' + 1][0].children[seleccion].classList[0];
-                const handle_rows_9 = this.$refs[2 + '_' + 1][0].children[seleccion].classList[0];
-            }
-
-
-            //if((handle_rows_1 === 'data_x') && (handle_rows_2 === 'data_x') && (handle_rows_3 === 'data_x') || (handle_rows_4 === 'data_x') && (handle_rows_5 === 'data_x') && (handle_rows_6 === 'data_x')){
-              //  x = 3
-            //}
-
-            //for(let row = 1; row <= 3; row++){
-              //  let handle_rows_horizontal = posicion + '_' + row;
-                //const referencia = this.$refs[handle_rows_horizontal][0].children[seleccion].classList[0];
-                //if(referencia === 'data_x'){
-                  //  x++
-                //}
-            //}
-
-            //for(let row = 0; row < 3; row++){
-              //  let handle_rows_horizontal = row + '_' + filas;
-                //const referencia = this.$refs[handle_rows_horizontal][0].children[seleccion].classList[0];
-                //if(referencia === 'data_x'){
-                  //  x++
-               // }
-            //}
-            //console.log(x)
-            console.log(val,'_',filas,'_',posicion)
-
-
-            if(x === 3){
-                console.log('gano horitzontal')
-            }
-
-            }
 
             //for(let handle_array = 0; handle_array < this.handle_ganador.length; handle_array++){
             //console.log(this.handle_ganador[filas])
@@ -266,6 +1436,26 @@ export default {
             //     }
             // }
         //}
+
+        
+            //for(let row = 1; row <= 3; row++){
+              //  let handle_rows_horizontal = posicion + '_' + row;
+                //const referencia = this.$refs[handle_rows_horizontal][0].children[seleccion].classList[0];
+                //if(referencia === 'data_x'){
+                  //  x++
+                //}
+            //}
+
+            //for(let row = 0; row < 3; row++){
+              //  let handle_rows_horizontal = row + '_' + filas;
+                //const referencia = this.$refs[handle_rows_horizontal][0].children[seleccion].classList[0];
+                //if(referencia === 'data_x'){
+                  //  x++
+               // }
+            //}
+            //console.log(x)
+            // console.log(val,'_',filas,'_',posicion)
+
     }
 }
 </script>
